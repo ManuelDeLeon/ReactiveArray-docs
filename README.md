@@ -1,2 +1,2 @@
-ReactiveArray-docs
-==================
+ReactiveArray
+=============
