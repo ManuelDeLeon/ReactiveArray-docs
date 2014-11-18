@@ -16,14 +16,9 @@ template(name='problem')
     div.tab-content
       div#problem-coffee.tab-pane.fade.active.in
         pre.
-          array = new ReactiveArray()
-          Template.users.helpers
-            nameList: -> array.list()
+          blank = new ReactiveArray()
+          names = new ReactiveArray ['Tom', 'Dick', 'Harry']
       div#problem-js.tab-pane.fade
         pre.
-          var array = new ReactiveArray();
-          Template.users.helpers({
-            nameList: function() {
-              return array.list();
-            }
-          });
+          var blank = new ReactiveArray();
+          var names = new ReactiveArray(['Tom', 'Dick', 'Harry']);

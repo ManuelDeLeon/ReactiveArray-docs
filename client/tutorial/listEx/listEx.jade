@@ -1,0 +1,86 @@
+template(name='listEx')
+  a.bookmark(id='listExBk')
+  #listEx
+    .section
+      h1 List Example
+
+      ul.unstyled
+        each names
+          li
+            a.btn.btn-danger.btn-mini.listExRemove(title="Remove this name") x
+            | #{this}
+
+      br
+      | Name:
+      input#listExName(type="text")
+      a.btn.btn-primary#listExAdd Add name to list
+      
+    .section
+      h2 Code
+      ul.nav.nav-pills
+        li.active
+          a(href="#listEx-jade", data-toggle="tab") Jade
+        li
+          a(href="#listEx-html", data-toggle="tab") Html
+      div.tab-content
+        div#listEx-jade.tab-pane.fade.active.in
+          pre.
+            ul.unstyled
+              each names
+                li
+                  a.btn.listExRemove(title="Remove this name") x
+                  | #&#123;this}
+            br
+            | Name:
+            input#listExName(type="text")
+            a.btn#listExAdd Add name to list
+        div#listEx-html.tab-pane.fade
+          pre.
+            &lt;ul class=&quot;unstyled&quot;&gt;
+              &#123;{#each names }}
+              &lt;li&gt;
+                &lt;a class=&quot;btn listExRemove&quot; title=&quot;Remove this name&quot;&gt;x&lt;/a&gt; &#123;{ this }}
+              &lt;/li&gt;
+              &#123;{/each}}
+            &lt;/ul&gt;
+            &lt;br&gt;
+            Name: &lt;input id=&quot;listExName&quot; type=&quot;text&quot;&gt; &lt;a class=&quot;btn&quot; id=&quot;listExAdd&quot;&gt;Add name to list&lt;/a&gt;
+
+      ul.nav.nav-pills
+        li.active
+          a(href="#listEx-coffee", data-toggle="tab") Coffeescript
+        li
+          a(href="#listEx-js", data-toggle="tab") Javascript
+      div.tab-content
+        div#listEx-coffee.tab-pane.fade.active.in
+          pre.
+            <b>arr = new ReactiveArray</b> ['Tom', 'Dick', 'Harry']
+
+            Template.listEx.helpers
+              names: -> <b>arr.list()</b>
+
+            Template.listEx.events
+              'click #listExAdd': ->
+                <b>arr.push</b> $('#listExName').val()
+                $('#listExName').val ''
+              'click .listExRemove': ->
+                <b>arr.remove</b> this.toString()
+        div#listEx-js.tab-pane.fade
+          pre.
+            var arr = new ReactiveArray(['Tom', 'Dick', 'Harry']);
+
+            Template.listEx.helpers({
+              names: function() {
+                return arr.list();
+              }
+            });
+
+            Template.listEx.events({
+              'click #listExAdd': function() {
+                arr.push($('#listExName').val());
+                return $('#listExName').val('');
+              },
+              'click .listExRemove': function() {
+                return arr.remove(this.toString());
+              }
+            });

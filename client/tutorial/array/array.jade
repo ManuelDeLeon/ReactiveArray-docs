@@ -1,0 +1,27 @@
+template(name='array')
+  a.bookmark(id='arrayBk')
+  .section
+    h1 .array Method
+    p It returns all elements as a plain Javascript array.
+    pre.
+      reactiveArray.array()
+
+  .section
+    h2 Example
+    ul.nav.nav-pills
+      li.active
+        a(href="#array-coffee", data-toggle="tab") Coffeescript
+      li
+        a(href="#array-js", data-toggle="tab") Javascript
+    div.tab-content
+      div#array-coffee.tab-pane.fade.active.in
+        pre.
+          names = new ReactiveArray ['John']
+          names.push 'Jane'
+          names.array() # ['John', 'Jane']
+
+      div#array-js.tab-pane.fade
+        pre.
+          var names = new ReactiveArray(['John']);
+          names.push('Jane');
+          names.array(); // ['John', 'Jane']

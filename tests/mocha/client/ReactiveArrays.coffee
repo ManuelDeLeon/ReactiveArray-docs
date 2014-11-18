@@ -11,7 +11,7 @@ if typeof MochaWeb isnt 'undefined'
       beforeEach ->
         arr = new ReactiveArray ['a', 'b']
 
-      describe "New ViewModel", ->
+      describe "New ReactiveArray", ->
         it "should have array values", ->
           chai.assert.equal arr.length, 2
           chai.assert.equal arr[0], 'a'
@@ -120,6 +120,8 @@ if typeof MochaWeb isnt 'undefined'
             if not c.firstRun
               chai.assert.equal a.length, 1
               chai.assert.equal a[0], 'a'
+              chai.assert.equal ra.length, 1
+              chai.assert.equal ra[0], 'a'
               c.stop()
               done()
           ra.push 'a'
@@ -139,7 +141,6 @@ if typeof MochaWeb isnt 'undefined'
         it "should work with an array and a dep", (done) ->
           dep = new Tracker.Dependency()
           ra = new ReactiveArray(['a'], dep)
-
           Tracker.autorun (c) ->
             dep.depend()
             if not c.firstRun
@@ -148,5 +149,139 @@ if typeof MochaWeb isnt 'undefined'
               chai.assert.equal ra[1], 'b'
               c.stop()
               done()
-
           ra.push 'b'
+
+      describe "depend", ->
+        it "should rerun autorun", (done) ->
+          ra = new ReactiveArray()
+          Tracker.autorun (c) ->
+            a = ra.depend()
+            if not c.firstRun
+              chai.assert.equal a.length, 1
+              chai.assert.equal a[0], 'a'
+              chai.assert.equal ra.length, 1
+              chai.assert.equal ra[0], 'a'
+              c.stop()
+              done()
+          ra.push 'a'
+
+      describe "array", ->
+        it "should rerun autorun", (done) ->
+          ra = new ReactiveArray()
+          Tracker.autorun (c) ->
+            a = ra.array()
+            if not c.firstRun
+              chai.assert.isFalse a instanceof ReactiveArray
+              chai.assert.equal a.length, 1
+              chai.assert.equal a[0], 'a'
+              chai.assert.equal ra.length, 1
+              chai.assert.equal ra[0], 'a'
+              c.stop()
+              done()
+          ra.push 'a'
+
+      describe "concat", ->
+        it "should work with a reactive array", (done) ->
+          ra = new ReactiveArray ['c']
+          newArr = arr.concat ra
+          chai.assert.equal newArr.length, 3
+          chai.assert.equal newArr[0], 'a'
+          chai.assert.equal newArr[1], 'b'
+          chai.assert.equal newArr[2], 'c'
+
+          Tracker.autorun (c) ->
+            newArr.depend()
+            if not c.firstRun
+              chai.assert.equal newArr.length, 4
+              chai.assert.equal newArr[0], 'a'
+              chai.assert.equal newArr[1], 'b'
+              chai.assert.equal newArr[2], 'c'
+              chai.assert.equal newArr[3], 'd'
+
+              c.stop()
+              done()
+          newArr.push 'd'
+
+        it "should work with a normal array", (done) ->
+          newArr = arr.concat ['c']
+          chai.assert.equal newArr.length, 3
+          chai.assert.equal newArr[0], 'a'
+          chai.assert.equal newArr[1], 'b'
+          chai.assert.equal newArr[2], 'c'
+
+          Tracker.autorun (c) ->
+            newArr.depend()
+            if not c.firstRun
+              chai.assert.equal newArr.length, 4
+              chai.assert.equal newArr[0], 'a'
+              chai.assert.equal newArr[1], 'b'
+              chai.assert.equal newArr[2], 'c'
+              chai.assert.equal newArr[3], 'd'
+
+              c.stop()
+              done()
+          newArr.push 'd'
+
+        it "should work with multiple params", (done) ->
+          ra = new ReactiveArray ['c']
+          newArr = arr.concat ra, ['d'], 'e'
+          chai.assert.equal newArr.length, 5
+          chai.assert.equal newArr[0], 'a'
+          chai.assert.equal newArr[1], 'b'
+          chai.assert.equal newArr[2], 'c'
+          chai.assert.equal newArr[3], 'd'
+          chai.assert.equal newArr[4], 'e'
+
+          Tracker.autorun (c) ->
+            newArr.depend()
+            if not c.firstRun
+              chai.assert.equal newArr.length, 6
+              chai.assert.equal newArr[0], 'a'
+              chai.assert.equal newArr[1], 'b'
+              chai.assert.equal newArr[2], 'c'
+              chai.assert.equal newArr[3], 'd'
+              chai.assert.equal newArr[4], 'e'
+              chai.assert.equal newArr[5], 'f'
+
+              c.stop()
+              done()
+          newArr.push 'f'
+
+        it "should work with a string", (done) ->
+          newArr = arr.concat 'c'
+          chai.assert.equal newArr.length, 3
+          chai.assert.equal newArr[0], 'a'
+          chai.assert.equal newArr[1], 'b'
+          chai.assert.equal newArr[2], 'c'
+
+          Tracker.autorun (c) ->
+            newArr.depend()
+            if not c.firstRun
+              chai.assert.equal newArr.length, 4
+              chai.assert.equal newArr[0], 'a'
+              chai.assert.equal newArr[1], 'b'
+              chai.assert.equal newArr[2], 'c'
+              chai.assert.equal newArr[3], 'd'
+
+              c.stop()
+              done()
+          newArr.push 'd'
+
+      describe "indexOf", ->
+        it "should rerun autorun", (done) ->
+          i = arr.indexOf 'c'
+          chai.assert.equal i, -1
+          Tracker.autorun (c) ->
+            i = arr.indexOf 'c'
+            if not c.firstRun
+              chai.assert.equal i, 2
+              c.stop()
+              done()
+          arr.push 'c'
+
+        it "should work with starting index",  ->
+          arr.push 'c'
+          arr.push 'd'
+          arr.push 'c'
+          i = arr.indexOf 'c', 3
+          chai.assert.equal i, 4
