@@ -3,7 +3,7 @@ template(name='depend')
   .section
     h1 .depend Method
     p It returns a reactive source of the array. An array variable isn't reactive by itself, you need to execute a function with dependency.depend() for Meteor to recognize it as a reactive source. The .depend() method does just that.
-    p .depend and .list are synonyms. The reason for providing two methods that perform the same function is that sometimes it makes more sense to say "get me the (reactive) list of items in the array" and others "this autorun depends on that array".
+    p .depend and .list are synonyms. The reason for providing two methods that perform the same function is that sometimes it makes more sense to say "get me the (reactive) list of items in the array" and other times "this autorun depends on that array".
     pre.
       reactiveArray.depend()
 
