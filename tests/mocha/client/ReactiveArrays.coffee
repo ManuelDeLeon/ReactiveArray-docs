@@ -152,7 +152,7 @@ if typeof MochaWeb isnt 'undefined'
           ra.push 'b'
 
       describe "depend", ->
-        it "should rerun autorun", (done) ->
+        it "should be reactive", (done) ->
           ra = new ReactiveArray()
           Tracker.autorun (c) ->
             a = ra.depend()
@@ -166,7 +166,7 @@ if typeof MochaWeb isnt 'undefined'
           ra.push 'a'
 
       describe "array", ->
-        it "should rerun autorun", (done) ->
+        it "should be reactive", (done) ->
           ra = new ReactiveArray()
           Tracker.autorun (c) ->
             a = ra.array()
@@ -268,7 +268,7 @@ if typeof MochaWeb isnt 'undefined'
           newArr.push 'd'
 
       describe "indexOf", ->
-        it "should rerun autorun", (done) ->
+        it "should be reactive", (done) ->
           i = arr.indexOf 'c'
           chai.assert.equal i, -1
           Tracker.autorun (c) ->
@@ -285,3 +285,53 @@ if typeof MochaWeb isnt 'undefined'
           arr.push 'c'
           i = arr.indexOf 'c', 3
           chai.assert.equal i, 4
+
+      describe "join", ->
+        it "should be reactive", (done) ->
+          Tracker.autorun (c) ->
+            s = arr.join()
+            if not c.firstRun
+              chai.assert.equal s, "a,b,c"
+              c.stop()
+              done()
+          arr.push 'c'
+
+        it "should work with a separator",  ->
+          s = arr.join '-'
+          chai.assert.equal s, "a-b"
+
+      describe "lastIndexOf", ->
+        it "should be reactive", (done) ->
+          Tracker.autorun (c) ->
+            i = arr.lastIndexOf 'b'
+            if not c.firstRun
+              chai.assert.equal i, 1
+              c.stop()
+              done()
+          arr.push 'c'
+
+        it "should work normally",  ->
+          array = new ReactiveArray [2, 5, 9, 2]
+          index = array.lastIndexOf(2)
+          chai.assert.equal index, 3
+          index = array.lastIndexOf(7)
+          chai.assert.equal index, -1
+          index = array.lastIndexOf(2, 3)
+          chai.assert.equal index, 3
+          index = array.lastIndexOf(2, 2)
+          chai.assert.equal index, 0
+          index = array.lastIndexOf(2, -2)
+          chai.assert.equal index, 0
+          index = array.lastIndexOf(2, -1)
+          chai.assert.equal index, 3
+
+      describe "clear", ->
+        it "should be reactive", (done) ->
+          Tracker.autorun (c) ->
+            s = arr.array()
+            if not c.firstRun
+              chai.assert.equal s.length, 0
+              c.stop()
+              done()
+          a = arr.clear()
+          chai.assert.isTrue a instanceof ReactiveArray

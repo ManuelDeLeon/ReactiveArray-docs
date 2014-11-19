@@ -34,7 +34,7 @@ class @ReactiveArray extends Array
     item
 
   pop: ->
-    item = super()
+    item = super
     changed()
     item
 
@@ -58,6 +58,11 @@ class @ReactiveArray extends Array
     changed() if removedValues.length
     removedValues
 
+  clear: ->
+    @pop() while @length
+    changed()
+    @
+
   concat: ->
     ret = this.array()
     for a in arguments
@@ -70,3 +75,12 @@ class @ReactiveArray extends Array
   indexOf: ->
     dep.depend()
     super
+
+  join: ->
+    dep.depend()
+    super
+
+  lastIndexOf: ->
+    dep.depend()
+    super
+
