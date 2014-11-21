@@ -1,4 +1,4 @@
-class @ReactiveArray extends Array
+class @ReactiveArrayX extends Array
   isArray = (obj) -> obj instanceof Array
   dep = null
   pause = false
@@ -28,12 +28,22 @@ class @ReactiveArray extends Array
     dep.depend()
     @
 
-  push: (item) ->
-    super
+  push: ->
+    item = super
+    changed()
+    item
+
+  unshift: ->
+    item = super
     changed()
     item
 
   pop: ->
+    item = super
+    changed()
+    item
+
+  shift: ->
     item = super
     changed()
     item
@@ -84,3 +94,17 @@ class @ReactiveArray extends Array
     dep.depend()
     super
 
+  reverse: ->
+    super
+    changed()
+    @
+
+  sort: ->
+    super
+    changed()
+    @
+
+  splice: ->
+    ret = super
+    changed()
+    ret
