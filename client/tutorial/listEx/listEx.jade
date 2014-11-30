@@ -25,26 +25,29 @@ template(name='listEx')
       div.tab-content
         div#listEx-jade.tab-pane.fade.active.in
           pre.
-            ul.unstyled
-              each names
-                li
-                  a.btn.listExRemove(title="Remove this name") x
-                  | #&#123;this}
-            br
-            | Name:
-            input#listExName(type="text")
-            a.btn#listExAdd Add name to list
+            template(name='listEx')
+              ul.unstyled
+                &#101;ach <b>names</b>
+                  li
+                    a.btn.listExRemove(title="Remove this name") x
+                    | #&#123;this}
+              br
+              | Name:
+              input#listExName(type="text")
+              a.btn#listExAdd Add name to list
         div#listEx-html.tab-pane.fade
           pre.
-            &lt;ul class=&quot;unstyled&quot;&gt;
-              &#123;{#each names }}
-              &lt;li&gt;
-                &lt;a class=&quot;btn listExRemove&quot; title=&quot;Remove this name&quot;&gt;x&lt;/a&gt; &#123;{ this }}
-              &lt;/li&gt;
-              &#123;{/each}}
-            &lt;/ul&gt;
-            &lt;br&gt;
-            Name: &lt;input id=&quot;listExName&quot; type=&quot;text&quot;&gt; &lt;a class=&quot;btn&quot; id=&quot;listExAdd&quot;&gt;Add name to list&lt;/a&gt;
+            &lt;template name=&#39;listEx&#39;&gt;
+              &lt;ul class=&quot;unstyled&quot;&gt;
+                &#123;{#each names }}
+                &lt;li&gt;
+                  &lt;a class=&quot;btn listExRemove&quot; title=&quot;Remove this name&quot;&gt;x&lt;/a&gt; &#123;{ this }}
+                &lt;/li&gt;
+                &#123;{/each}}
+              &lt;/ul&gt;
+              &lt;br&gt;
+              Name: &lt;input id=&quot;listExName&quot; type=&quot;text&quot;&gt; &lt;a class=&quot;btn&quot; id=&quot;listExAdd&quot;&gt;Add name to list&lt;/a&gt;
+            &lt;/template&gt;
 
       ul.nav.nav-pills
         li.active
