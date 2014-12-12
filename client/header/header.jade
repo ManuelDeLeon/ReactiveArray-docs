@@ -28,6 +28,16 @@ template(name='header')
               li(role='presentation')
                 a(role='menuitem', tabindex='-1', href='#clearBk') .clear
 
+          li.dropdown
+            a#drop2.dropdown-toggle(href='#', role='button', data-toggle='dropdown')
+              | Source
+              b.caret
+            ul.dropdown-menu(role='menu')
+              li(role='presentation')
+                a(role='menuitem', tabindex='-1', href='https://github.com/ManuelDeLeon/ReactiveArray' target="_blank") Reactive Array
+              li(role='presentation')
+                a(role='menuitem', tabindex='-1', href='https://github.com/ManuelDeLeon/ReactiveArray-docs' target="_blank") Documentation
+
         ul.nav.pull-right(role='navigation')
           li
             a(href='mailto:manueldeleon@gmail.com') Feedback

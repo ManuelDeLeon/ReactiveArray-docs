@@ -6,6 +6,14 @@ if typeof MochaWeb isnt 'undefined'
         return false if obj1[p] isnt obj2[p]
       true
 
+    arrEquals = (a1, a2) ->
+      return false if a1.length isnt a2.length
+      i = 0
+      while i < a1.length
+        return false if a1[i] isnt a2[i]
+        i++
+      true
+
     describe "ReactiveArray", ->
       arr = null
       beforeEach ->
@@ -21,9 +29,9 @@ if typeof MochaWeb isnt 'undefined'
           chai.assert.isTrue arr instanceof Array
 
       describe "push", ->
-        it "should return the item", ->
-          ret = arr.push 'c'
-          chai.assert.equal ret, 'c'
+        it "should return the array length", ->
+          ret = arr.push 'c', 'd'
+          chai.assert.equal ret, 4
 
         it "should add item to array", ->
           arr.push 'c'
@@ -335,3 +343,124 @@ if typeof MochaWeb isnt 'undefined'
               done()
           a = arr.clear()
           chai.assert.isTrue a instanceof ReactiveArray
+
+      describe "reverse", ->
+        it "should be reactive", (done) ->
+          Tracker.autorun (c) ->
+            newArr = arr.array()
+            if not c.firstRun
+              chai.assert.equal newArr.length, 2
+              chai.assert.equal newArr[0], 'b'
+              chai.assert.equal newArr[1], 'a'
+              c.stop()
+              done()
+          arr.reverse()
+
+      describe "shift", ->
+        it "should be reactive", (done) ->
+          Tracker.autorun (c) ->
+            a = arr.list()
+            if not c.firstRun
+              chai.assert.equal arr.length, 1
+              chai.assert.equal arr[0], 'b'
+              c.stop()
+              done()
+
+          e = arr.shift()
+          chai.assert.equal e, 'a'
+
+      describe "sort", ->
+        it "should be reactive", (done) ->
+          arr.push 'd','c'
+          Tracker.autorun (c) ->
+            newArr = arr.array()
+            if not c.firstRun
+              chai.assert.equal newArr.length, 4
+              chai.assert.equal newArr[0], 'a'
+              chai.assert.equal newArr[1], 'b'
+              chai.assert.equal newArr[2], 'c'
+              chai.assert.equal newArr[3], 'd'
+              c.stop()
+              done()
+          arr.sort()
+
+          it "should work with a function", ->
+            arr = new ReactiveArray [3,2,4,1]
+            arr.sort (a,b) -> a - b
+            chai.assert.equal arr.length, 4
+            chai.assert.equal arr[0], 1
+            chai.assert.equal arr[1], 2
+            chai.assert.equal arr[2], 3
+            chai.assert.equal arr[3], 4
+
+      describe "splice", ->
+        it "should work normally", ->
+          myFish = new ReactiveArray ['angel', 'clown', 'mandarin', 'surgeon']
+
+          # removes 0 elements from index 2, and inserts 'drum'
+          removed = myFish.splice(2, 0, 'drum')
+          chai.assert.isTrue arrEquals( myFish, ['angel', 'clown', 'drum', 'mandarin', 'surgeon'] )
+          chai.assert.isTrue arrEquals( removed, [] )
+
+          # removes 1 element from index 3
+          removed = myFish.splice(3, 1)
+          chai.assert.isTrue arrEquals( myFish, ['angel', 'clown', 'drum', 'surgeon'] )
+          chai.assert.isTrue arrEquals( removed, ['mandarin'] )
+
+          # removes 1 element from index 2, and inserts 'trumpet'
+          removed = myFish.splice(2, 1, 'trumpet')
+          chai.assert.isTrue arrEquals( myFish, ['angel', 'clown', 'trumpet', 'surgeon'] )
+          chai.assert.isTrue arrEquals( removed, ['drum'] )
+
+          # removes 2 elements from index 0, and inserts 'parrot', 'anemone' and 'blue'
+          removed = myFish.splice(0, 2, 'parrot', 'anemone', 'blue')
+          chai.assert.isTrue arrEquals( myFish, ['parrot', 'anemone', 'blue', 'trumpet', 'surgeon'] )
+          chai.assert.isTrue arrEquals( removed, ['angel', 'clown'] )
+
+          # removes 2 elements from index 3
+          removed = myFish.splice(3, Number.MAX_VALUE)
+          chai.assert.isTrue arrEquals( myFish, ['parrot', 'anemone', 'blue'] )
+          chai.assert.isTrue arrEquals( removed, ['trumpet', 'surgeon'] )
+
+        it "should be reactive", (done) ->
+          Tracker.autorun (c) ->
+            newArr = arr.array()
+            if not c.firstRun
+              chai.assert.equal newArr.length, 1
+              chai.assert.equal newArr[0], 'b'
+              c.stop()
+              done()
+          arr.splice(0, 1)
+
+      describe "toString", ->
+        it "should be reactive", (done) ->
+          Tracker.autorun (c) ->
+            s = arr.toString()
+            if not c.firstRun
+              chai.assert.equal s, "a,b,c"
+              c.stop()
+              done()
+          arr.push 'c'
+
+
+      describe "unshift", ->
+        it "should return the array length", ->
+          ret = arr.unshift 'c', 'd'
+          chai.assert.equal ret, 4
+
+        it "should add item to array", ->
+          arr.unshift 'c'
+          chai.assert.equal arr.length, 3
+          chai.assert.equal arr[0], 'c'
+          chai.assert.equal arr[1], 'a'
+          chai.assert.equal arr[2], 'b'
+
+        it "should notify", (done) ->
+          Tracker.autorun (c) ->
+            a = arr.list()
+            if not c.firstRun
+              chai.assert.equal arr[0], 'c'
+              c.stop()
+              done()
+
+          arr.unshift 'c'

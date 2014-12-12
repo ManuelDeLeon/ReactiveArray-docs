@@ -16,10 +16,10 @@ template(name='clear')
     div.tab-content
       div#clear-coffee.tab-pane.fade.active.in
         pre.
-          array = new Reactiveclear ['a', 'b', 'c']
+          array = new ReactiveArray ['a', 'b', 'c']
           array.clear() # []
 
       div#clear-js.tab-pane.fade
         pre.
-          var array = new Reactiveclear(['a', 'b', 'c']);
+          var array = new ReactiveArray(['a', 'b', 'c']);
           array.clear(); // []
