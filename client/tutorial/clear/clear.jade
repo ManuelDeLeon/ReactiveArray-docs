@@ -1,0 +1,25 @@
+template(name='clear')
+  a.bookmark(id='clearBk')
+  .section
+    h1 .clear Method
+    p It removes all elements from the array.
+    pre.
+      array.clear()
+
+  .section
+    h2 Example
+    ul.nav.nav-pills
+      li.active
+        a(href="#clear-coffee", data-toggle="tab") Coffeescript
+      li
+        a(href="#clear-js", data-toggle="tab") Javascript
+    div.tab-content
+      div#clear-coffee.tab-pane.fade.active.in
+        pre.
+          array = new Reactiveclear ['a', 'b', 'c']
+          array.clear() # []
+
+      div#clear-js.tab-pane.fade
+        pre.
+          var array = new Reactiveclear(['a', 'b', 'c']);
+          array.clear(); // []
